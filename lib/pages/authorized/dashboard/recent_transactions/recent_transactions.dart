@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:mobile/api/dashboard_api.dart';
 import 'package:mobile/classes/login_state.dart';
 import 'package:mobile/pages/authorized/dashboard/recent_transactions/transaction_card.dart';
@@ -52,92 +53,100 @@ class _RecentTransactionsState extends State<RecentTransactions> {
                 )),
             child: Padding(
               padding: const EdgeInsets.only(bottom: 0),
-              child: NotificationListener<ScrollNotification>(
+              child: NotificationListener<UserScrollNotification>(
                 onNotification: (scrollNotification) {
-                  if (scrollNotification.metrics.pixels - position >=
-                      sensitivityFactor) {
-                    position = scrollNotification.metrics.pixels;
+                  final ScrollDirection direction =
+                      scrollNotification.direction;
+                  if (direction == ScrollDirection.reverse) {
                     widget.hideBottomNavbar(true);
                   }
-                  if (position - scrollNotification.metrics.pixels >=
-                      sensitivityFactor) {
-                    position = scrollNotification.metrics.pixels;
+                  if (direction == ScrollDirection.forward) {
                     widget.hideBottomNavbar(false);
                   }
                   return true;
                 },
                 child: FutureBuilder<Map<String, dynamic>>(
-                  future: transactions,
-                  builder: (context, snap) {
-                  if (snap.hasData) {
-                    var data = snap.data!;
-                    var history = List.from(data["history"]);
-                    var previous = [];
-                    if(data.containsKey("previous")) previous = List.from(data["previous"]);
-                    return ListView.builder(
-                        controller: _controller,
-                        itemCount: history.isNotEmpty ? history.length + 2 : previous.length + 2,
-                        itemBuilder: (ctx, _index) {
-                          if (_index == 0) {
-                            return Center(
-                              child: Container(
-                                width: 125,
-                                height: 5,
-                                decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(5),
-                                    color: const Color(0xffd9d9d9)),
-                              ),
-                            );
-                          }
-                          if (_index == 1) {
-                            return Padding(
-                              padding: const EdgeInsets.symmetric(
-                                  horizontal: 16, vertical: 16),
-                              child: Text(
-                                history.isNotEmpty ? "Current Month Transactions" : "Previous Month Transactions",
-                                style: const TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 18,
-                                  fontFamily: "Signika",
-                                  fontWeight: FontWeight.w500,
-                                ),
-                              ),
-                            );
-                          }
-                          _index -= 2;
-                          getAmount(data){
-                            // double amount = 0;
-                            // if(data['debit'] !=null) amount = amount - double.parse(data['debit']);
-                            // if(data['credit'] !=null) amount = amount + double.parse(data['credit']);
-                            var amount = "";
-                            if(data['debit'] !=null && data['debit'].isNotEmpty){
-                              amount = '- ${data["debit"]}';
-                            }
-                            if(data['credit'] !=null && data['credit'].isNotEmpty){
-                              amount = '+ ${data["credit"]}';
-                            }
-                            return amount;
-                          }
+                    future: transactions,
+                    builder: (context, snap) {
+                      if (snap.hasData) {
+                        var data = snap.data!;
+                        var history = List.from(data["history"]);
+                        var previous = [];
+                        if (data.containsKey("previous"))
+                          previous = List.from(data["previous"]);
+                        return ListView.builder(
+                            controller: _controller,
+                            itemCount: history.isNotEmpty
+                                ? history.length + 2
+                                : previous.length + 2,
+                            itemBuilder: (ctx, _index) {
+                              if (_index == 0) {
+                                return Center(
+                                  child: Container(
+                                    width: 125,
+                                    height: 5,
+                                    decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(5),
+                                        color: const Color(0xffd9d9d9)),
+                                  ),
+                                );
+                              }
+                              if (_index == 1) {
+                                return Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 16, vertical: 16),
+                                  child: Text(
+                                    history.isNotEmpty
+                                        ? "Current Month Transactions"
+                                        : "Previous Month Transactions",
+                                    style: const TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 18,
+                                      fontFamily: "Signika",
+                                      fontWeight: FontWeight.w500,
+                                    ),
+                                  ),
+                                );
+                              }
+                              _index -= 2;
+                              getAmount(data) {
+                                // double amount = 0;
+                                // if(data['debit'] !=null) amount = amount - double.parse(data['debit']);
+                                // if(data['credit'] !=null) amount = amount + double.parse(data['credit']);
+                                var amount = "";
+                                if (data['debit'] != null &&
+                                    data['debit'].isNotEmpty) {
+                                  amount = '- ${data["debit"]}';
+                                }
+                                if (data['credit'] != null &&
+                                    data['credit'].isNotEmpty) {
+                                  amount = '+ ${data["credit"]}';
+                                }
+                                return amount;
+                              }
 
-                          getType(data){
-                            if(data['debit'] !=null && data['debit'].isNotEmpty) return 'Debit';
-                            if(data['credit'] !=null && data['credit'].isNotEmpty) return 'Credit';
-                            return "";
-                          }
+                              getType(data) {
+                                if (data['debit'] != null &&
+                                    data['debit'].isNotEmpty) return 'Debit';
+                                if (data['credit'] != null &&
+                                    data['credit'].isNotEmpty) return 'Credit';
+                                return "";
+                              }
 
-                          history = history.isNotEmpty ? history : previous;
+                              history = history.isNotEmpty ? history : previous;
 
-                          return TransactionCard(
-                            description: history[_index]['description'],
-                            amount: getAmount(history[_index]),
-                            date: history[_index]['date'],
-                            type: getType(history[_index]),
-                          );
-                        });
-                  }
-                  return const Center(
-                      child: DottedCircularProgressIndicatorFb(numDots: 10));
-                }),
+                              return TransactionCard(
+                                description: history[_index]['description'],
+                                amount: getAmount(history[_index]),
+                                date: history[_index]['date'],
+                                type: getType(history[_index]),
+                              );
+                            });
+                      }
+                      return const Center(
+                          child:
+                              DottedCircularProgressIndicatorFb(numDots: 10));
+                    }),
               ),
             ),
           );
