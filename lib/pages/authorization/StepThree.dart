@@ -34,27 +34,77 @@ class _StepThreeState extends State<StepThree> {
     var cookie = state['Cookie'];
     final passwordController = TextEditingController();
 
+    proceedStepThree(LoginState loginState)async{
+      var password = passwordController.text;
+      var dio = Dio();
+      var api = dotenv.get('BASE_SERVER_URL');
+      var username = loginState.username;
+      
+      if (password.isNotEmpty) {
+        try {
+          var res = await dio.post('$api/login/password', data: {
+            "password": password,
+            "Cookie": cookie,
+            "__fp": fp,
+            "_sourcePage": sourcePage
+          });
+          var Authorization = Map<String, dynamic>.from(res.data['authorized']);
+          saveLocalAuthorization(json.encode(Authorization), username);
+          
+          saveLocalUser(username, password);
+          if(rememberMe) setDataExpired();
+          loginState.updateAuthorization(Authorization.toString());
+        } catch (e) {
+          log('step3'+e.toString());
+        }
+      }
+    }
+
     return Consumer<LoginState>(
       builder: (ctx, loginState, _) {
         return Column(
           mainAxisSize: MainAxisSize.min,
           children: [
             SizedBox(
-              width: 0.85 * width,
+                      width: 0.85 * width,
               child: Material(
-                elevation: 1,
-                borderRadius: BorderRadius.circular(8),
-                child: TextFormField(
-                    controller: passwordController,
-                    obscureText: true,
-                    decoration: const InputDecoration(
-                      hintText: "Enter your password...",
-                      contentPadding:
-                          EdgeInsets.symmetric(vertical: 10, horizontal: 16),
-                      border: OutlineInputBorder(
-                          borderSide: BorderSide.none,
-                          borderRadius: BorderRadius.all(Radius.circular(16.0))),
-                    )),
+                    elevation: 1,
+                    borderRadius: BorderRadius.circular(8),
+                child: Row(
+                  children: [
+                    SizedBox(
+                      width: 0.725 * width,
+                      child: TextFormField(
+                          controller: passwordController,
+                          obscureText: true,
+                          decoration: const InputDecoration(
+                            hintText: "Enter your password...",
+                            contentPadding:
+                                EdgeInsets.symmetric(vertical: 10, horizontal: 16),
+                            border: OutlineInputBorder(
+                                borderSide: BorderSide.none,
+                                borderRadius: BorderRadius.all(Radius.circular(16.0))),
+                          )),
+                    ),
+                    
+                  Expanded(
+                    child: Container(
+                      decoration: const BoxDecoration(
+                          // color: Colors.cyan,
+                          borderRadius: BorderRadius.only(
+                              topRight: Radius.circular(8),
+                              bottomRight: Radius.circular(8))),
+                      child: TextButton(
+                        child: const Icon(
+                          Icons.arrow_forward_ios_rounded,
+                          color: Colors.cyan,
+                        ),
+                        onPressed: () async => await proceedStepThree(loginState),
+                      ),
+                    ),
+                  )
+                  ],
+                ),
               ),
             ),
             SizedBox(
@@ -77,39 +127,39 @@ class _StepThreeState extends State<StepThree> {
                     });
                   }),
             ),
-            SizedBox(
-              width: 0.85 * width,
-              child: ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                    minimumSize: const Size.fromHeight(40), primary: Colors.cyan),
-                onPressed: () async {
-                  var password = passwordController.text;
-                  var dio = Dio();
-                  var api = dotenv.get('BASE_SERVER_URL');
-                  var username = loginState.username;
+            // SizedBox(
+            //   width: 0.85 * width,
+            //   child: ElevatedButton(
+            //     style: ElevatedButton.styleFrom(
+            //         minimumSize: const Size.fromHeight(40), primary: Colors.cyan),
+            //     onPressed: () async {
+            //       var password = passwordController.text;
+            //       var dio = Dio();
+            //       var api = dotenv.get('BASE_SERVER_URL');
+            //       var username = loginState.username;
                   
-                  if (password.isNotEmpty) {
-                    try {
-                      var res = await dio.post('$api/login/password', data: {
-                        "password": password,
-                        "Cookie": cookie,
-                        "__fp": fp,
-                        "_sourcePage": sourcePage
-                      });
-                      var Authorization = Map<String, dynamic>.from(res.data['authorized']);
-                      saveLocalAuthorization(json.encode(Authorization), username);
+            //       if (password.isNotEmpty) {
+            //         try {
+            //           var res = await dio.post('$api/login/password', data: {
+            //             "password": password,
+            //             "Cookie": cookie,
+            //             "__fp": fp,
+            //             "_sourcePage": sourcePage
+            //           });
+            //           var Authorization = Map<String, dynamic>.from(res.data['authorized']);
+            //           saveLocalAuthorization(json.encode(Authorization), username);
                       
-                      saveLocalUser(username, password);
-                      if(rememberMe) setDataExpired();
-                      loginState.updateAuthorization(Authorization.toString());
-                    } catch (e) {
-                      log('step3'+e.toString());
-                    }
-                  }
-                },
-                child: const Text('Proceed Sign In'),
-              ),
-            ),
+            //           saveLocalUser(username, password);
+            //           if(rememberMe) setDataExpired();
+            //           loginState.updateAuthorization(Authorization.toString());
+            //         } catch (e) {
+            //           log('step3'+e.toString());
+            //         }
+            //       }
+            //     },
+            //     child: const Text('Proceed Sign In'),
+            //   ),
+            // ),
             SizedBox(
               width: 0.85 * width,
               child: ElevatedButton(

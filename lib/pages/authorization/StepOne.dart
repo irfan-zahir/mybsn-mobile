@@ -37,19 +37,17 @@ class StepOne extends StatelessWidget {
     }
 
     return Consumer<LoginState>(builder: (context, loginState, _) {
-      return SizedBox(
-        width: 0.85 * width,
-        height: 45,
-        child: Row(
-          children: [
-            SizedBox(
-              width: 0.75 * width,
-              height: 45,
-              child: Material(
-                elevation: 1,
-                borderRadius: const BorderRadius.only(
-                    topLeft: Radius.circular(8),
-                    bottomLeft: Radius.circular(8)),
+      return Material(
+                        borderRadius: BorderRadius.circular(8),
+                        elevation: 2,
+        child: SizedBox(
+          width: 0.85 * width,
+          height: 45,
+          child: Row(
+            children: [
+              SizedBox(
+                width: 0.725 * width,
+                height: 45,
                 child: TextFormField(
                     controller: usernameController,
                     decoration: const InputDecoration(
@@ -62,44 +60,60 @@ class StepOne extends StatelessWidget {
                               BorderRadius.all(Radius.circular(16.0))),
                     )),
               ),
-            ),
-            InkWell(
-              onTap: () => proceedStepTwo(loginState),
-              child: Expanded(
-                child: SizedBox(
-                  width: 0.1 * width,
-                  height: double.maxFinite,
-                  child: const Material(
-                    elevation: 1,
-                    borderRadius: BorderRadius.only(
-                        topRight: Radius.circular(8),
-                        bottomRight: Radius.circular(8)),
-                    child: Icon(
+              Expanded(
+                child: Container(
+                  decoration: const BoxDecoration(
+                      // color: Colors.cyan,
+                      borderRadius: BorderRadius.only(
+                          topRight: Radius.circular(8),
+                          bottomRight: Radius.circular(8))),
+                  child: TextButton(
+                    child: const Icon(
                       Icons.arrow_forward_ios_rounded,
                       color: Colors.cyan,
                     ),
+                    onPressed: () async => await proceedStepTwo(loginState),
                   ),
                 ),
-              ),
-            )
-            // const SizedBox(
-            //   height: 24,
-            // ),
-            // SizedBox(
-            //   width: 0.85 * width,
-            //   child: ElevatedButton(
-            //     style: ElevatedButton.styleFrom(
-            //         shape: RoundedRectangleBorder(
-            //             borderRadius: BorderRadius.circular(8)),
-            //         primary: Colors.cyan,
-            //         minimumSize: const Size.fromHeight(40)),
-            //     onPressed: () async {
-            //
-            //     },
-            //     child: const Text('Login'),
-            //   ),
-            // )
-          ],
+              )
+              // InkWell(
+              //   onTap: () => proceedStepTwo(loginState),
+              //   child: Expanded(
+              //     child: SizedBox(
+              //       width: 0.1 * width,
+              //       height: double.maxFinite,
+              //       child: const Material(
+              //         elevation: 1,
+              //         borderRadius: BorderRadius.only(
+              //             topRight: Radius.circular(8),
+              //             bottomRight: Radius.circular(8)),
+              //         child: Icon(
+              //           Icons.arrow_forward_ios_rounded,
+              //           color: Colors.cyan,
+              //         ),
+              //       ),
+              //     ),
+              //   ),
+              // )
+              // const SizedBox(
+              //   height: 24,
+              // ),
+              // SizedBox(
+              //   width: 0.85 * width,
+              //   child: ElevatedButton(
+              //     style: ElevatedButton.styleFrom(
+              //         shape: RoundedRectangleBorder(
+              //             borderRadius: BorderRadius.circular(8)),
+              //         primary: Colors.cyan,
+              //         minimumSize: const Size.fromHeight(40)),
+              //     onPressed: () async {
+              //
+              //     },
+              //     child: const Text('Login'),
+              //   ),
+              // )
+            ],
+          ),
         ),
       );
     });
