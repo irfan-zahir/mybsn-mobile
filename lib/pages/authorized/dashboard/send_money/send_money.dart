@@ -12,7 +12,7 @@ class _SendMoneyState extends State<SendMoney> {
   @override
   Widget build(BuildContext context) {
     return Padding(
-        padding: const EdgeInsets.all(24.0),
+        padding: const EdgeInsets.symmetric(horizontal: 24),
         child: Column(
           children: [
             Row(

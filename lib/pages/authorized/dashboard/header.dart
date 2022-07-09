@@ -13,7 +13,7 @@ class _DashboardHeaderState extends State<DashboardHeader> {
   Widget build(BuildContext context) {
     var name = widget.preferedName;
     return Padding(
-      padding: const EdgeInsets.fromLTRB(24, 48, 24, 16),
+      padding: const EdgeInsets.fromLTRB(24, 32, 24, 8),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [

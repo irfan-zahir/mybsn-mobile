@@ -31,8 +31,8 @@ class _LoginScreenState extends State<LoginScreen> {
           children: [
             SizedBox(
               child: Column(
-                children: [
-                  const Text(
+                children: const [
+                  Text(
                     'myBSN',
                     style: TextStyle(
                         letterSpacing: 2,
@@ -41,7 +41,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         color: Colors.cyan,
                         fontWeight: FontWeight.w900),
                   ),
-                  const Text(
+                  Text(
                     'unofficial',
                     style: TextStyle(
                         fontSize: 24,
