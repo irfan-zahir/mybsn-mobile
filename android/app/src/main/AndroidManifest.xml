@@ -2,8 +2,8 @@
     package="com.unofficial.mybsn.mobile">
    <application
         android:label="mobile"
-        android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
+        <!-- android:name="${applicationName}" -->
         <activity
             android:name=".MainActivity"
             android:exported="true"
