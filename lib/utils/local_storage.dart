@@ -30,7 +30,7 @@ Future<Map<dynamic, dynamic>> getLocalUser() async {
   String? epwd = _prefs.getString('password');
   String? username = _prefs.getString('username');
   
-  if(epwd ==null && epwd!.isEmpty){
+  if(epwd !=null && epwd.isEmpty){
   return {"username": username, "password": epwd};
   }
   return {"username": username, "password":  EncryptData.decryptAES(epwd)};

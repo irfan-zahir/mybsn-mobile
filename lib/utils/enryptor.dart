@@ -23,7 +23,7 @@ class EncryptData{
     final key = Key.fromUtf8(ENCRYPT_KEY);
     final iv = IV.fromLength(16);
     final encrypter = Encrypter(AES(key));
-    decrypted = encrypter.decrypt64(plainText!, iv: iv);
+    if(plainText != null) decrypted = encrypter.decrypt64(plainText, iv: iv);
     return decrypted;
   }
 }
